@@ -1,0 +1,90 @@
+---
+title: "COVID-19 Deaths in BRAZIL"
+output: html_document
+---
+
+```{r, echo=FALSE, message=FALSE, warning=FALSE}
+## Load Packages
+library(dplyr)
+library(tidyr)
+library(stringr)
+library(leaflet)
+library(leaflet.extras)
+library(rgdal)
+```
+
+```{r, echo=FALSE}
+setwd('C:/Data-Science-Foundations-using-R-Specialization/Data-Products/Peer-graded_Assignment/')
+```
+
+
+```{r, echo=FALSE}
+## Load the Brazilian COVID data set
+covid <- read.csv2(
+        'C:/Data-Science-Foundations-using-R-Specialization/Data-Products/Peer-graded_Assignment/data/HIST_PAINEL_COVIDBR_26mai2021.csv',
+        header = TRUE,
+        encoding = 'Windows-1252') %>% 
+        filter(municipio != '', geocodigo != '')
+```
+
+```{r, echo=FALSE}
+## Read brazilian cities data set
+cities <- read.csv(
+        'C:/Data-Science-Foundations-using-R-Specialization/Data-Products/Peer-graded_Assignment/data/brazilian_cities.csv',
+        encoding = 'UTF-8'
+) %>% rename(municipio = nome) %>%
+        mutate(
+                municipio = str_replace(
+                        municipio, pattern = "''", replacement = "'"
+                )
+        ) %>%
+        select(id, geocodigo, municipio, lng, lat)
+
+## Merge the data sets
+covid_cities <- covid %>%
+        left_join(cities[-c(1, 2)], by = 'municipio', keep = FALSE) 
+#head(covid_cities)
+```
+
+'## September 7, 2021'
+```{r, echo=FALSE, warning=FALSE, message=FALSE, comment=''}
+## Map
+brazil <- readOGR(
+        'C:/Data-Science-Foundations-using-R-Specialization/Data-Products/Peer-graded_Assignment/data/brazil.shp', 
+        verbose = FALSE
+)
+
+covid_cities %>%
+        select(lat, lng, municipio, obitosNovos) %>%
+        group_by(lng, lat, municipio) %>%
+        summarise(totalDeaths = sum(obitosNovos, na.rm = TRUE)) %>%
+        filter(!is.na(lng)) %>%
+        filter(!is.na(lat)) %>%
+        leaflet() %>%
+        addTiles() %>%
+        ## Set heatmap of COVID-19 in Brazil
+        addHeatmap(
+                lng = ~lng, lat = ~lat, intensity = ~totalDeaths, 
+                blur = 20, max = 0.5, radius = 14
+        ) %>%
+        addCircles(
+                lng = ~lng, lat = ~lat,
+                label = ~totalDeaths,
+                opacity = 0, fill = FALSE 
+        ) %>%
+        addLegend('bottomright',
+                  values = ~totalDeaths, opacity = 1,
+                  pal = colorNumeric(palette = 'RdYlBu',
+                                     reverse = TRUE,
+                                     domain = covid_cities$totalDeaths),
+                  title = 'Total Deaths') %>%
+        setView(lng = -50.80182849, lat = -11.00090426, zoom = 4) %>%
+        ## Add Brazil boundary
+        addPolygons(
+                data = brazil, color = 'black', 
+                fill = NA, 
+                fillOpacity = 0.3
+        ) %>%
+        addTiles()
+
+```
