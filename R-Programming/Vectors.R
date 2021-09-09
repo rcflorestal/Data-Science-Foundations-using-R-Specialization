@@ -60,3 +60,7 @@ x[-2] # all but the second
 
 x[-c(1, 2, 3)]  # drop first 3
 x[-(1:3)]       # shorthand
+
+
+order(x)
+x[order(x)]
