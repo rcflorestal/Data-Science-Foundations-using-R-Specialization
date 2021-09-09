@@ -1,16 +1,19 @@
 library(shiny)
 
+
 # Define UI for application
 shinyUI(fluidPage(
         
         # Application title
         titlePanel('Word Predictor'),
         
+
         # Sidebar with a text input
         sidebarLayout(
                       fluidRow(
                       ),
                       
+
                       # Show a panel text
                       mainPanel(
                               textAreaInput('text', 

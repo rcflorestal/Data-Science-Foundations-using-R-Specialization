@@ -46,7 +46,7 @@ covid_cities <- covid %>%
 #head(covid_cities)
 ```
 
-## May 27, 2021
+'## September 7, 2021'
 ```{r, echo=FALSE, warning=FALSE, message=FALSE, comment=''}
 ## Map
 brazil <- readOGR(
