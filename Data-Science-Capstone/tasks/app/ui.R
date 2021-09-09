@@ -1,17 +1,20 @@
 library(shiny)
 
-# Define UI for application 
+
+# Define UI for application
 shinyUI(fluidPage(
         
         # Application title
         titlePanel('Word Predictor'),
         
-        # Sidebar with a text box
+
+        # Sidebar with a text input
         sidebarLayout(
                       fluidRow(
                       ),
                       
-                      # Show a plot of the generated distribution
+
+                      # Show a panel text
                       mainPanel(
                               textAreaInput('text', 
                                             label = 'Type a word and wait', 

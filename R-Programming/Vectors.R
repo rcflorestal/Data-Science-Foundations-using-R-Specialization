@@ -58,3 +58,12 @@ a <- c(5000, 1, 0, 350)
 order(a)
 
 a[order(a)]
+
+##
+x = c(1, 3, 77, 54, 23, 7, 76, 5)
+
+x[-2] # all but the second
+
+x[-c(1, 2, 3)]  # drop first 3
+x[-(1:3)]       # shorthand
+

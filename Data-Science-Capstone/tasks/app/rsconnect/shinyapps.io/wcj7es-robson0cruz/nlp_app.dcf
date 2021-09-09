@@ -1,0 +1,14 @@
+name: nlp_app
+title: nlp_app
+username:
+account: wcj7es-robson0cruz
+server: shinyapps.io
+hostUrl: https://api.shinyapps.io/v1
+appId: 4344845
+bundleId: 4784619
+url: https://wcj7es-robson0cruz.shinyapps.io/nlp_app/
+when: 1625356100.08062
+lastSyncTime: 1625356100.08062
+asMultiple: FALSE
+asStatic: FALSE
+ignoredFiles: server0.R|trigramsApp.rds|trigramsParquet.parquet|ui0.R
