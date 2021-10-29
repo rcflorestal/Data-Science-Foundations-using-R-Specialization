@@ -1,0 +1,131 @@
+---
+title: "Amazon Deforestation"
+author: "Robson Cruz"
+date: "29/05/2021"
+output: ioslides_presentation
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE)
+```
+
+```{r, echo=FALSE, message=FALSE, warning=FALSE, comment='', cache=TRUE}
+library(rgdal) 
+library(dplyr)
+library(leaflet)
+library(ggplot2)
+library(plotly)
+library(tidyverse)
+library(htmltools)
+```
+
+## Deforestation in Amazon by 2020
+```{r, echo=FALSE, warning=FALSE, message=FALSE}
+## Read sahpefiles
+library(dplyr)
+defAmzState <- rgdal::readOGR(  ## States
+        'C:/Data-Science-Foundations-using-R-Specialization/Data-Products/Peer-graded_Assignment2/data/Amz_States_def.shp',
+        verbose = FALSE, use_iconv = TRUE, encoding = 'UTF-8'
+)
+
+
+## Read the Amazon deforestation data frame - 2008 to 2020
+ds_amz <- read.csv2(
+        'C:/Data-Science-Foundations-using-R-Specialization/Data-Products/Peer-graded_Assignment2/data/terrabrasilis_legal_amazon_1988_2020.csv'
+) %>% mutate(year = as.character(year, format = '%Y'))
+
+## Read the Amazon deforestation Data frame by State - 2008 to 2020        
+ds_state <- read.csv2(
+        'C:/Data-Science-Foundations-using-R-Specialization/Data-Products/Peer-graded_Assignment2/data/terrabrasilis_states_amazon_1988_2020.csv'
+) %>% rename(State = uf) %>%
+        mutate(year = as.character(year, format = '%Y'))
+
+## Summarize the data by State
+library(tidyverse)
+library(ggplot2)
+library(plotly)
+sum_State <- ds_state %>%
+        group_by(State) %>%
+        summarize(def = sum(area_km2)) %>%
+        rename(nome = State) %>%
+        mutate(nome = str_to_title(nome))
+
+## Bar plot Amazon deforestation - 1988-2020
+amz_def <- ds_amz %>%
+        ggplot(aes(x = year)) +
+        geom_bar(aes(y = area_km2), stat = 'identity', fill = 'steelblue') +
+        scale_y_continuous(
+                breaks = seq(5000, 30000, by = 5000),
+                labels = scales::label_number(big.mark = ',')
+        ) +
+        theme(
+                axis.text.x = element_text(angle = 45)
+        ) +
+        labs(
+                x = 'Year', y = 'Area  (km2)'
+        )
+
+ggplotly(amz_def)
+```
+
+## Amazon deforestation by state
+```{r, echo=FALSE, warning=FALSE,message=FALSE}
+library(ggplot2)
+library(plotly)
+## Bar plot Amazon deforestation by state - 1988-2020
+amz_state <- ds_state %>%
+        ggplot(aes(x = year, y = area_km2, color = State, group = State)) +
+        geom_point() +
+        geom_line() +
+        scale_y_continuous(
+                breaks = seq(1000, 12000, by = 1000),
+                labels = scales::label_number(big.mark = ',')
+        ) +
+        theme(
+                axis.text.x = element_text(angle = 45)
+        ) +
+        labs(
+                x = 'Year', y = 'Area  (km2)'
+        )
+
+ggplotly(amz_state)
+```
+
+## Map of deforestation in Amazon
+```{r, echo=FALSE, warning=FALSE}
+library(leaflet)
+## Map of deforestation in Amazon
+#
+## Set color to legend
+pal <- colorBin(palette = 'viridis', domain = defAmzState$def_)
+
+map <- leaflet() %>%
+        addTiles() %>%
+        addPolygons(data = defAmzState, color = 'red', fillColor = 'transparent') %>%
+        addPolygons(
+                data = defAmzState, 
+                stroke = FALSE,
+                color = ~ pal(def_),
+                fillOpacity = 0.85,
+                popup = ~paste0(sep = ' ', 
+                               '<b>State: </b>', as.character(nome), '<br>',
+                               '<b>Deforestation: </b>', formatC(def_,
+                                                                 digits = 2,
+                                                                 format = 'f',
+                                                                 big.mark = ',',
+                                                                 decimal.mark = '.'),
+                               ' km²'),
+                label = ~paste0(sep = '', formatC(def_, big.mark = ',', 
+                                                  format = 'f',
+                                                  digits = 0), 
+                                ' km²')
+        ) %>%
+        # addPolygons(
+        #         data = defAmz1998_2007,
+        #         color = 'red'
+        # ) %>%
+        addMiniMap()
+
+map
+```
+## Thank you!
