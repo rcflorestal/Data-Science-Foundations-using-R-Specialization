@@ -2,7 +2,9 @@
 
 library(dplyr)
 
-mydf <- read.csv(path2csv, stringsAsFactors = F)
+path2csv <- "C:/Data-Science-Foundations-using-R-Specialization/R-Programming/cran_df/cran_df.csv"
+
+mydf <- read.csv(path2csv, stringsAsFactors = FALSE)
 
 # Use dim() to look at the dimensions of mydf.
 dim(mydf)
@@ -46,18 +48,18 @@ filter(cran, country == "US" | country == "IN")
 
 
 # Filter rows which size is strictly greater than 100500 and r_os is "linux-gnu".
-filter(cran,size > 100500, r_os == "linux-gnu")
+filter(cran, size > 100500, r_os == "linux-gnu")
 
 # Finally, we want to get only the rows for which the r_version is not missing
 filter(cran, !is.na(r_version))
 
 # Sometimes we want to order the rows of a dataset according to the values of a 
 # particular variable
-arrange(cran2, ip_id)   ## from small to large - ascending order
-arrange(cran2, ip_id)   ## from large to small - descending order
+arrange(cran2, ip_id)           ## from small to large - ascending order
+arrange(cran2, desc(ip_id))     ## from large to small - descending order
 
 # We can also arrange the data according to the values of multiple variables.
-arrange(carn2, package, ip_id)
+arrange(cran2, package, ip_id)
 
 
 # Arrange cran2 by the following three variables, in this order: country 
@@ -86,15 +88,7 @@ summarize(cran, avg_bytes = mean(size))
 # into groups of rows based on the values of one or more variables.
 # The group_by() function is reponsible for doing this.
 #
-# I've made the dataset available to you in a data frame called mydf. Put it in
-# a 'data frame tbl' using the tbl_df() function and store the result in a
-# object called cran. If you're not sure what I'm talking about, you should 
-# start with the previous lesson. Otherwise, practice makes perfect!
-cran <- tbl_df(mydf)
 
-# To avoid confusion and keep things running smoothly, let's remove the original 
-# dataframe from your workspace with rm("mydf").
-rm("mydf")
 
 # Group cran by the package variable and store the result in a new object called 
 # by_package.
@@ -122,6 +116,11 @@ summarize(by_package, mean(size))
 # which each package was downloaded. And finally, the 'avg_bytes' column, 
 # created with mean(size), contains the mean download size (in bytes) for each 
 # package.
+by_package <- mutate(by_package,
+       count = n(), 
+       unique = n_distinct(ip_id), 
+       countries = n_distinct(country), 
+       avg_bytes = mean(size))
 
 # Naturally, we'd like to know which packages were most popular on the day these
 # data were collected (July 8, 2014). Let's start by isolating the top 1% of 
@@ -130,12 +129,12 @@ summarize(by_package, mean(size))
 # We need to know the value of 'count' that splits the data into the top 1% and 
 # bottom 99% of packages based on total downloads. In statistics,this is called 
 # the 0.99, or 99%, sample quantile.
-quantile(pack_sum$count, probs = 0.99)
+quantile(by_package$count, probs = 0.99)
 
 # Now we can isolate only those packages which had more than 679 total downloads. 
-# Use filter() to select all rows from pack_sum for which 'count' is strictly 
+# Use filter() to select all rows from by_package for which 'count' is strictly 
 # greater (>) than 679. Store the result in a new object called top_counts.
-top_counts <- filter(pack_sum, count > 679)
+top_counts <- filter(by_package, count > 679)
 
 # There are only 61 packages in our top 1%, so we'd like to see all of them. 
 # Since dplyr only shows us the first 10 rows, we can use the View() function to
@@ -155,8 +154,8 @@ View(top_counts_sorted)
 # particular day. In other words, if a package is downloaded ten times in one 
 # day from the same computer, we may wish to count that as only one download. 
 # That's what the 'unique' column will tell us.
-quantile(pack_sum$unique, probs = 0.99)
-top_unique <- filter(pack_sum, unique > 465)
+quantile(by_package$unique, probs = 0.99)
+top_unique <- filter(by_package, unique > 465)
 View(top_unique)
 
 # Arrange(top_unique, desc(unique)) will arrange the rows of top_unique based on
@@ -183,8 +182,7 @@ result3 <-
         summarize(count = n(),
                   unique = n_distinct(ip_id),
                   countries = n_distinct(country),
-                  avg_bytes = mean(size)
-        ) %>%
+                  avg_bytes = mean(size)) %>%
         filter(countries > 60) %>%
         arrange(desc(countries), avg_bytes)
 

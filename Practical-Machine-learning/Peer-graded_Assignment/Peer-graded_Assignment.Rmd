@@ -3,8 +3,8 @@ title: "Human Activity Recognition"
 author: "Robson Cruz"
 date: "12/05/2021"
 output:
-  html_document: default
   pdf_document: default
+  html_document: default
 ---
 
 ```{r setup, include = FALSE}
@@ -36,7 +36,7 @@ because it is usually one of the two top performing algorithms along with
 boosting in prediction contests.
 
 ## Load packages and Set the work directory
-```{r echo = FALSE}
+```{r echo = FALSE, message=FALSE, warning=FALSE, comment=''}
 ## Load packages
 library(caret)
 library(kernlab)
@@ -52,14 +52,14 @@ setwd('C:/Data-Science-Foundations-using-R-Specialization/Practical-Machine-lear
 
 
 ## Load the data set
-```{r import-data, cache = TRUE, echo = FALSE }
+```{r import-data, cache=TRUE, echo=FALSE, message=FALSE, warning=FALSE, comment='' }
 training <- read.csv('./pml-training.csv')
 
 testing <- read.csv('./pml-testing.csv')
 ```
 
 ## Processing Data Set and Results
-```{r echo = TRUE, cache  = TRUE}
+```{r echo=TRUE, cache=TRUE, message=FALSE, warning=FALSE, comment=''}
 ## Elimination of Variables
 espl <- with(training, split(num_window, f = classe))
 for ( i in 1:4 ) {
@@ -115,7 +115,7 @@ trainingSample$classe <- factor(trainingSample$classe)
 ```
 
 The summary statistics for training data set and test dataset are shown below.
-```{r echo = TRUE, cache = TRUE}
+```{r echo = TRUE, cache = TRUE, message=FALSE, warning=FALSE, comment=''}
 ## Summary statistics
 summary(trainingSample)
 summary(test)
@@ -148,7 +148,7 @@ The result of the analysis with the Random forest algorithm is shown below,
 where it is possible to observe that the three most important variables are 
 accel_belt_z, accel_dumbbell_y and accel_arm_x.
 
-```{r echo = TRUE, cache = TRUE}
+```{r echo = TRUE, cache = TRUE, message=FALSE, warning=FALSE, comment=''}
 #####-> Model Fitting with Random Forest package
 set.seed(30131)
 rf.prelim <- randomForest(
@@ -205,7 +205,7 @@ pml_write_files = function(x){
                 row.names = FALSE, 
                 col.names = FALSE)
   }
-}-
+}
 
 pml_write_files(examPreds)
 ```

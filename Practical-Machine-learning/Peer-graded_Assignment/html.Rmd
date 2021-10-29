@@ -2,7 +2,9 @@
 title: "Peer_greded_ML"
 author: "Robson Cruz"
 date: "18/05/2021"
-output: html_document
+output:
+  html_document: default
+  pdf_document: default
 ---
 
 ```{r setup, include=FALSE}
@@ -35,7 +37,7 @@ because it is usually one of the two top performing algorithms along with
 boosting in prediction contests.
 
 ## Load packages and Set the work directory
-```{r echo = FALSE}
+```{r echo=FALSE, message=FALSE, warning=FALSE, comment=''}
 ## Load packages
 library(caret)
 library(kernlab)
@@ -57,8 +59,8 @@ training <- read.csv('./pml-training.csv')
 testing <- read.csv('./pml-testing.csv')
 ```
 
-## Processing Data Set and Results
-```{r echo = TRUE, cache  = TRUE}
+# Processing Data Set and Results
+```{r echo=TRUE, cache=TRUE, message=FALSE, warning=FALSE, comment=''}
 ## Elimination of Variables
 espl <- with(training, split(num_window, f = classe))
 for ( i in 1:4 ) {
@@ -114,7 +116,7 @@ trainingSample$classe <- factor(trainingSample$classe)
 ```
 
 The summary statistics for training data set and test dataset are shown below.
-```{r echo = TRUE, cache = TRUE}
+```{r echo = TRUE, cache = TRUE, message=FALSE, warning=FALSE, comment=''}
 ## Summary statistics
 summary(trainingSample)
 summary(test)
@@ -147,7 +149,7 @@ The result of the analysis with the Random forest algorithm is shown below,
 where it is possible to observe that the three most important variables are 
 accel_belt_z, accel_dumbbell_y and accel_arm_x.
 
-```{r echo = TRUE, cache = TRUE}
+```{r echo = TRUE, cache = TRUE, message=FALSE, warning=FALSE, comment=''}
 #####-> Model Fitting with Random Forest package
 set.seed(30131)
 rf.prelim <- randomForest(
@@ -190,7 +192,7 @@ test2 <- testing[, keepNames]
 test2$user_name <- factor(test2$user_name)
 
 examPreds <- predict(rf, newdata = test2)
-results <- matrix(examPreds, nrow = 20)
+results <- matrix(examPreds, nrow = 1)
 colnames(results) <- test$problem_id
 kable(results)
 
@@ -204,7 +206,7 @@ pml_write_files = function(x){
                 row.names = FALSE, 
                 col.names = FALSE)
   }
-}-
+}
 
 pml_write_files(examPreds)
 ```
@@ -231,7 +233,3 @@ ISBN 978-3-642-34458-9. DOI: 10.1007/978-3-642-34459-6_6.
 
 [4] R Core Team (2020). R: A language and environment for statistical computing. 
 R Foundation for Statistical Computing, Vienna, Austria. URL https://www.R-project.org/.
-
-
-
-
