@@ -11,7 +11,8 @@ output:
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
-## Introduction
+# Introduction
+
 Human Activity Recognition (HAR) has emerged as a key research area in the last
 years and is gaining increasing attention by the pervasive computing research 
 community (see picture below, that illustrates the increasing number of publications 
@@ -23,7 +24,8 @@ According to [1] it is possible to detect mistakes by classification in HAR data
 set. Customized application of this dataset can be seen in [2].
 The goal of this project is to predict the manner in which the subjects exercised. 
 
-## Metodology
+# Metodology
+
 In this project we made use of the Human Activity Recognition dataset [3] and 
 select the following variables: classe, accel_belt_x, accel_belt_y, accel_belt_z, 
 accel_forearm_x, accel_forearm_y, accel_forearm_z, accel_arm_x, accel_arm_y, 
@@ -35,8 +37,14 @@ and the other to training. We use the Random Forest algorithm to prediction
 because it is usually one of the two top performing algorithms along with
 boosting in prediction contests.
 
-## Load packages and Set the work directory
-```{r echo = FALSE}
+# Load packages
+
+```{r, include=FALSE}
+## Set the work directory
+setwd('C:/Data-Science-Foundations-using-R-Specialization/Practical-Machine-learning/Peer-graded_Assignment/')
+```
+
+```{r include=FALSE, warning=FALSE, message=FALSE}
 ## Load packages
 library(caret)
 library(kernlab)
@@ -46,20 +54,19 @@ library(ggplot2)
 library(dplyr)
 library(tidyr)
 library(kableExtra)
-## Set the work directory
-setwd('C:/Data-Science-Foundations-using-R-Specialization/Practical-Machine-learning/Peer-graded_Assignment/')
 ```
 
 
-## Load the data set
-```{r import-data, cache = TRUE, echo = FALSE }
+# Load the data set
+```{r import-data, cache=TRUE}
 training <- read.csv('./pml-training.csv')
 
 testing <- read.csv('./pml-testing.csv')
 ```
 
-## Processing Data Set and Results
-```{r echo = TRUE, cache  = TRUE}
+# Processing Data Set and Results
+
+```{r echo=TRUE, cache=TRUE, warning=FALSE, message=FALSE, comment=''}
 ## Elimination of Variables
 espl <- with(training, split(num_window, f = classe))
 for ( i in 1:4 ) {
@@ -210,7 +217,7 @@ pml_write_files = function(x){
 pml_write_files(examPreds)
 ```
 
-## REFERENCES
+## REFERENCE
 [1] Velloso, E.; Bulling, A.; Gellersen, H.; Ugulino, W.; Fuks, H. Qualitative
 Activity Recognition of Weight Lifting Exercises. Proceedings of 4th International
 Conference in Cooperation with SIGCHI (Augmented Human '13) . Stuttgart, 
@@ -232,7 +239,3 @@ ISBN 978-3-642-34458-9. DOI: 10.1007/978-3-642-34459-6_6.
 
 [4] R Core Team (2020). R: A language and environment for statistical computing. 
 R Foundation for Statistical Computing, Vienna, Austria. URL https://www.R-project.org/.
-
-
-
-
