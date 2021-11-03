@@ -120,7 +120,9 @@ map <- leaflet() %>%
                                                   digits = 0), 
                                 ' km²')
         ) %>%
-        #addLegend(pal = pal, values = ~pal(def_), opacity = 0.7, position = 'bottomright') %>%
+        addLegend(data = defAmzState, pal = pal, values = ~def_, 
+                  opacity = 0.7, position = 'bottomright', 
+                  title = 'Deforestation rate') %>%
         addMiniMap(position = 'bottomleft')
 
 map
