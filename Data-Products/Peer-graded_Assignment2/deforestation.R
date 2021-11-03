@@ -85,7 +85,7 @@ ggplotly(amz_state)
 ## Map of deforestation in Amazon
 #
 ## Set color to legend
-pal <- colorBin(palette = 'viridis', domain = defAmzState$def_)
+pal <- colorQuantile(palette = 'viridis', domain = defAmzState$def_, n = 9)
 
 map <- leaflet() %>%
         addTiles() %>%
@@ -93,7 +93,7 @@ map <- leaflet() %>%
         addPolygons(
                 data = defAmzState, 
                 stroke = FALSE,
-                color = ~ pal(def_),
+                color = ~pal(def_),
                 fillOpacity = 0.85,
                 popup = ~paste0(sep = ' ', 
                                '<b>State: </b>', as.character(nome), '<br>',
@@ -108,10 +108,7 @@ map <- leaflet() %>%
                                                   digits = 0), 
                                 ' km²')
         ) %>%
-        # addPolygons(
-        #         data = defAmz1998_2007,
-        #         color = 'red'
-        # ) %>%
-        addMiniMap()
+        #addLegend(pal = pal, values = ~pal(def_), opacity = 0.7, position = 'bottomright') %>%
+        addMiniMap(position = 'bottomleft')
 
 map
